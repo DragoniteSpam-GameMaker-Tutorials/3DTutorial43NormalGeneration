@@ -10,7 +10,7 @@ void main() {
     vec4 lightAmbient = vec4(0.25, 0.25, 0.25, 1);
     vec3 lightDirection = normalize(vec3(1, 1, -1));
     
-    float NdotL = -dot(v_worldNormal, lightDirection);
+    float NdotL = max(0.0, -dot(v_worldNormal, lightDirection));
     
     vec4 final_color = starting_color * vec4(min(lightAmbient + NdotL, vec4(1)).rgb, starting_color.a);
     gl_FragColor = final_color;
