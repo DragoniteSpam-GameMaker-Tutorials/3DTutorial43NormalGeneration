@@ -2,6 +2,8 @@ function scr_calculate_normals(vbuffer) {
     var buffer = buffer_create_from_vertex_buffer(vbuffer, buffer_fixed, 1);
     vertex_delete_buffer(vbuffer);
     
+    // Iterate over each triangle in the vertex buffer;
+    // each triangle is composed of three vertices
     for (var i = 0; i < buffer_get_size(buffer); i += 36 * 3) {
         var x1 = buffer_peek(buffer, i + 00, buffer_f32);
         var y1 = buffer_peek(buffer, i + 04, buffer_f32);
@@ -19,11 +21,18 @@ function scr_calculate_normals(vbuffer) {
         var v2 = new Vector3(x2, y2, z2);
         var v3 = new Vector3(x3, y3, z3);
         
+        // Figure out the position of v2 and v3 relative to v1,
+        // sometimes known as "edges"
         var e1 = v2.Sub(v1);
         var e2 = v3.Sub(v1);
         
+        // The (normalized) cross product of those edges is the
+        // normal of the triangle
         var norm = e1.Cross(e2).Normalize();
         
+        // Insert the calculated normals back into the vertex
+        // buffer; for flat shading, the normals of each vertex
+        // is the same as the normal of the triangle
         buffer_poke(buffer, i + 12, buffer_f32, norm.x);
         buffer_poke(buffer, i + 16, buffer_f32, norm.y);
         buffer_poke(buffer, i + 20, buffer_f32, norm.z);
